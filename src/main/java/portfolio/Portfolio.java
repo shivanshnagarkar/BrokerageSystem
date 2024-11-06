@@ -17,7 +17,10 @@ public class Portfolio {
         this.holdings = new ConcurrentHashMap<>();
     }
 
-    public synchronized void buy(String shareName, int quantity, Double price) throws InsufficientCashException {
+    public synchronized void buy(String shareName, int quantity, Double price, int delta) throws InsufficientCashException {
+
+        if(delta!=0)
+            quantity = delta;
         double requiredCash = price*quantity;
         if(cash>=requiredCash) {
             holdings.put(shareName, holdings.getOrDefault(shareName, 0) + quantity);
@@ -28,8 +31,10 @@ public class Portfolio {
 
     }
 
-    public synchronized void sell(String shareName, int quantity, Double price) throws InsufficientQuantityException {
+    public synchronized void sell(String shareName, int quantity, Double price, int delta) throws InsufficientQuantityException {
         if (holdings.containsKey(shareName)) {
+            if(delta!=0)
+                quantity = delta;
             int current = holdings.get(shareName);
             if (current > quantity) {
                 holdings.put(shareName, (current-quantity));
@@ -48,13 +53,13 @@ public class Portfolio {
         return holdings;
     }
 
-    public synchronized void updatePortfolio(Trade trade) throws InsufficientQuantityException, InsufficientCashException {
+    public synchronized void updatePortfolio(Trade trade, int delta) throws InsufficientQuantityException, InsufficientCashException {
 
         if(trade.getBuyOrSell()== 'B')
-            buy(trade.getShareName(),trade.getShareQuantity(), trade.getSharePrice());
+            buy(trade.getShareName(),trade.getShareQuantity(), trade.getSharePrice(), delta);
         else
             if(trade.getBuyOrSell()== 'S')
-            sell(trade.getShareName(),trade.getShareQuantity(), trade.getSharePrice());
+            sell(trade.getShareName(),trade.getShareQuantity(), trade.getSharePrice(), delta);
 
 
 

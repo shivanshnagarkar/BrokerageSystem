@@ -4,6 +4,7 @@ import customExceptions.InsufficientCashException;
 import customExceptions.InsufficientQuantityException;
 import customExceptions.InvalidTradeException;
 import enums.Status;
+import enums.Type;
 import model.Response;
 import model.Trade;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,16 +41,21 @@ public class TradeService {
         return new Response(tradeId, Status.ACCEPTED);
     }
 
-    private Integer updateTrade(Trade trade) throws InvalidTradeException {
-        Trade oldTrade = tradeRepository.findById(trade.getTradeId()).orElseThrow(() -> new InvalidTradeException(" "));
-        trade = tradeRepository.save(trade);
+    private Integer updateTrade(Trade trade) throws InvalidTradeException, InsufficientCashException, InsufficientQuantityException {
+        Trade oldTrade = tradeRepository.findById(trade.getTradeId()).orElseThrow(() -> new InvalidTradeException("Trade not present"));
+        oldTrade.setSharePrice(trade.getSharePrice());
+        oldTrade.setShareQuantity(trade.getShareQuantity());
+        oldTrade.setTradeType(Type.UPDATE);
+        int delta = oldTrade.getShareQuantity() - trade.getShareQuantity();
+        portfolio.updatePortfolio(oldTrade, delta);
+        trade = tradeRepository.save(oldTrade);
        return trade.getTradeId();
     }
 
     private Integer createNewTrade(Trade trade) throws InsufficientQuantityException, InsufficientCashException {
 
 
-        portfolio.updatePortfolio(trade);
+        portfolio.updatePortfolio(trade ,0);
         trade = tradeRepository.save(trade);
 
         return trade.getTradeId();
