@@ -30,9 +30,11 @@ public class TradeController {
              response = new Response(trade.getTradeId()==null?-1:trade.getTradeId(), Status.REJECTED);
             return new ResponseEntity<Response>(response, HttpStatus.BAD_REQUEST);
         } catch (InsufficientCashException e) {
-            e.printStackTrace();
+            response = new Response(trade.getTradeId()==null?-1:trade.getTradeId(), Status.REJECTED);
+            return new ResponseEntity<Response>(response, HttpStatus.UNPROCESSABLE_ENTITY);
         } catch (InsufficientQuantityException e) {
-            e.printStackTrace();
+            response = new Response(trade.getTradeId()==null?-1:trade.getTradeId(), Status.REJECTED);
+            return new ResponseEntity<Response>(response, HttpStatus.UNPROCESSABLE_ENTITY);
         }
         return new ResponseEntity<Response>(response, HttpStatus.OK);
     }
