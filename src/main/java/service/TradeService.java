@@ -24,6 +24,9 @@ public class TradeService {
     @Autowired
     Portfolio portfolio;
 
+    @Autowired
+    TradePublisher publisher;
+
     public Response createOrUpdateTrade(Trade trade) throws InvalidTradeException, InsufficientCashException, InsufficientQuantityException {
 
         if(!TradeValidator.isTradeValid(trade))
@@ -37,7 +40,7 @@ public class TradeService {
         else {
             tradeId = updateTrade(trade);
         }
-
+        publisher.publishToExchange(trade);
         return new Response(tradeId, Status.ACCEPTED);
     }
 
