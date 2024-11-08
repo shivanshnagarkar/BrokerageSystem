@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import service.TradeService;
 
 @RestController()
+@RequestMapping("/trades")
 public class TradeController {
 
     @Autowired
