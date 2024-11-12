@@ -34,7 +34,7 @@ public class Trade {
     private Integer traderId;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column
     Status status;
 
     @Column(nullable = false)
