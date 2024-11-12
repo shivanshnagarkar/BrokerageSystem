@@ -13,7 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import service.TradeService;
 
-@RestController()
+@RestController
 @RequestMapping("/trades")
 public class TradeController {
 
